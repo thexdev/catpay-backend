@@ -7,6 +7,8 @@ services:
       - catpay
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./docker/volumes/postgres:/var/lib/postgresql/data
 
 networks:
   catpay:

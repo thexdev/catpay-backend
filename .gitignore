@@ -3,3 +3,5 @@ tmp/*
 !tmp/.gitkeep
 bin/*
 !bin/.gitkeep
+docker/volumes/*
+!docker/volumes/.gitkeep
