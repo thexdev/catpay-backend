@@ -12,7 +12,7 @@ import (
 func TestLoginUseCase(t *testing.T) {
 	var (
 		userRepo       = repository.NewInMemoryRepository()
-		passwordHasher = service.NewPasswordHasher()
+		passwordHasher = service.NewBcryptPasswordHasher()
 
 		wrongLoginReq = usecase.LoginRequest{
 			Email:    "user1@example.com", // available user
@@ -27,7 +27,7 @@ func TestLoginUseCase(t *testing.T) {
 	t.Run("intialize without error", func(t *testing.T) {
 		loginUseCase := usecase.NewLoginUseCase(
 			userRepo,
-			*passwordHasher,
+			passwordHasher,
 		).SetCredential(wrongLoginReq)
 
 		assert.IsType(t, &usecase.LoginUseCase{}, loginUseCase)
@@ -36,7 +36,7 @@ func TestLoginUseCase(t *testing.T) {
 	t.Run("returns true when login success", func(t *testing.T) {
 		loginUseCase := usecase.NewLoginUseCase(
 			userRepo,
-			*passwordHasher,
+			passwordHasher,
 		).SetCredential(validLoginReq)
 
 		ok, err := loginUseCase.Execute()
@@ -48,7 +48,7 @@ func TestLoginUseCase(t *testing.T) {
 	t.Run("returns error when login failed", func(t *testing.T) {
 		loginUseCase := usecase.NewLoginUseCase(
 			userRepo,
-			*passwordHasher,
+			passwordHasher,
 		).SetCredential(wrongLoginReq)
 
 		ok, err := loginUseCase.Execute()

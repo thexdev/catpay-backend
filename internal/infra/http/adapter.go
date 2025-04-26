@@ -1,7 +1,9 @@
 package http
 
 import (
+	"catpay/internal/app/service"
 	"catpay/internal/infra/http/handler"
+	"catpay/internal/infra/repository"
 	"context"
 	"log"
 
@@ -33,7 +35,10 @@ func (h *Http) Bootstrap() *fiber.App {
 
 	app := fiber.New()
 
-	authHandler := handler.NewAuthHandler(h.db)
+	userRepo := repository.NewPostgresUserRepository(h.db)
+	passHasher := service.NewBcryptPasswordHasher()
+
+	authHandler := handler.NewAuthHandler(userRepo, passHasher)
 
 	app.Post("/login", authHandler.Login)
 	app.Post("/register", authHandler.Register)

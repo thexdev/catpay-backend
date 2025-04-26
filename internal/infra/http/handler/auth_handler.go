@@ -1,17 +1,16 @@
 package handler
 
 import (
+	"catpay/internal/app/port"
 	"catpay/internal/app/service"
 	"catpay/internal/app/usecase"
 	"catpay/internal/infra/http/request"
-	"catpay/internal/infra/repository"
 	"catpay/internal/infra/repository/entity"
 	"errors"
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
@@ -19,23 +18,18 @@ var (
 )
 
 type AuthHandler struct {
-	db *pgxpool.Pool
-
 	loginUseCase    usecase.LoginUseCase
 	registerUseCase usecase.RegisterUseCase
 }
 
-func NewAuthHandler(db *pgxpool.Pool) *AuthHandler {
-	repo := repository.NewPostgresUserRepository(db)
-	hasher := service.NewPasswordHasher()
-
-	loginUseCase := usecase.NewLoginUseCase(repo, *hasher)
-	registerUseCase := usecase.NewRegisterUseCase(repo, *hasher)
+func NewAuthHandler(
+	userRepo port.UserRepository,
+	passHasher service.PasswordHasher,
+) *AuthHandler {
+	loginUseCase := usecase.NewLoginUseCase(userRepo, passHasher)
+	registerUseCase := usecase.NewRegisterUseCase(userRepo, passHasher)
 
 	return &AuthHandler{
-		db: db,
-
-		// all use cases...
 		loginUseCase:    *loginUseCase,
 		registerUseCase: *registerUseCase,
 	}

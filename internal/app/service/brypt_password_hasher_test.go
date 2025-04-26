@@ -11,15 +11,15 @@ import (
 
 func TestPasswordHasher(t *testing.T) {
 	t.Run("initialize without error", func(t *testing.T) {
-		s := service.NewPasswordHasher()
+		s := service.NewBcryptPasswordHasher()
 
-		assert.IsType(t, &service.PasswordHasher{}, s)
+		assert.IsType(t, &service.BcryptPasswordHasher{}, s)
 	})
 }
 
 func TestPasswordHasher_Make(t *testing.T) {
 	t.Run("returns hashed password", func(t *testing.T) {
-		hasher := service.NewPasswordHasher()
+		hasher := service.NewBcryptPasswordHasher()
 
 		hashed, err := hasher.Make("new password")
 
@@ -32,7 +32,7 @@ func TestPasswordHasher_Verify(t *testing.T) {
 	t.Run("returns true when password match", func(t *testing.T) {
 		var (
 			repo    = repository.NewInMemoryRepository()
-			service = service.NewPasswordHasher()
+			service = service.NewBcryptPasswordHasher()
 		)
 
 		hashed, err := repo.GetHashedPasswordByEmail("user1@example.com")
@@ -44,7 +44,7 @@ func TestPasswordHasher_Verify(t *testing.T) {
 	t.Run("returns false when password unmatch", func(t *testing.T) {
 		var (
 			repo    = repository.NewInMemoryRepository()
-			service = service.NewPasswordHasher()
+			service = service.NewBcryptPasswordHasher()
 		)
 
 		hashed, err := repo.GetHashedPasswordByEmail("user2@example.com")
